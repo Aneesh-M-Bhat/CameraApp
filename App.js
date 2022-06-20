@@ -9,7 +9,7 @@ import {
 } from "react-native";
 import { Camera } from "expo-camera";
 import { Video } from "expo-av";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+// import AsyncStorage from '@react-native-async-storage/async-storage';
 // import * as Permissions from 'expo-permissions';
 import * as MediaLibrary from 'expo-media-library';
 const WINDOW_HEIGHT = Dimensions.get("window").height;
@@ -46,7 +46,7 @@ export default function App() {
         setIsPreview(true);
         console.log("picture source", source);
       }
-      // MediaLibrary.saveToLibraryAsync(source);
+      MediaLibrary.saveToLibraryAsync(source);
       // const jsonValue = JSON.stringify(source);
       // await AsyncStorage.setItem('@storage_Key', jsonValue);
       
