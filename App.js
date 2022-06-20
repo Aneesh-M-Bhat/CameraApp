@@ -20,18 +20,18 @@ export default function App() {
   const [isVideoRecording, setIsVideoRecording] = useState(false);
   const [videoSource, setVideoSource] = useState(null);
   const cameraRef = useRef();
+
+  //Check Camera & Microphone Perms
   useEffect(() => {
     (async () => {
-      const { statusC } = await Camera.requestCameraPermissionsAsync();
-      const { statusM } = await Camera.requestMicrophonePermissionsAsync();
-      // if (statusC == "granted" && statusM == "granted")
-      setHasPermission(true);
-      // else setHasPermission(true);
+      const statusC = await Camera.requestCameraPermissionsAsync();
+      const statusM = await Camera.requestMicrophonePermissionsAsync();
+      if (statusC.status == "granted" && statusM.status == "granted")
+        setHasPermission(true);
+      else setHasPermission(true);
     })();
   }, []);
-  const onCameraReady = () => {
-    setIsCameraReady(true);
-  };
+
   const takePicture = async () => {
     if (cameraRef.current) {
       const options = { quality: 0.5, base64: true, skipProcessing: true };
@@ -134,7 +134,7 @@ export default function App() {
         style={styles.container}
         type={cameraType}
         flashMode={Camera.Constants.FlashMode.on}
-        onCameraReady={onCameraReady}
+        onCameraReady={() => setIsCameraReady(true)}
         onMountError={(error) => {
           console.log("cammera error", error);
         }}
@@ -148,6 +148,7 @@ export default function App() {
     </SafeAreaView>
   );
 }
+
 const styles = StyleSheet.create({
   container: { ...StyleSheet.absoluteFillObject },
   closeButton: {
