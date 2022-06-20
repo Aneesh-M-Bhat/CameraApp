@@ -53,7 +53,7 @@ export default function App() {
         setIsPreview(true);
         console.log("picture source", source);
       }
-      const { uri }= await Camera.takePictureAsync();
+      const { uri } = await Camera.takePictureAsync();
       const asset = await MediaLibrary.createAssetAsync(uri);
       MediaLibrary.saveToLibraryAsync(asset);
       // const jsonValue = JSON.stringify(source);
