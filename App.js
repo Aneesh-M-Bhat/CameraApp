@@ -9,19 +9,20 @@ import {
 } from "react-native";
 import { Camera } from "expo-camera";
 import { Video } from "expo-av";
-// import AsyncStorage from '@react-native-async-storage/async-storage';
-// import * as Permissions from 'expo-permissions';
 import * as MediaLibrary from "expo-media-library";
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 const closeButtonSize = Math.floor(WINDOW_HEIGHT * 0.032);
 const captureSize = Math.floor(WINDOW_HEIGHT * 0.09);
+
 export default function App() {
+  //State Declaration
   const [hasPermission, setHasPermission] = useState(null);
   const [cameraType, setCameraType] = useState(Camera.Constants.Type.back);
   const [isPreview, setIsPreview] = useState(false);
   const [isCameraReady, setIsCameraReady] = useState(false);
   const [isVideoRecording, setIsVideoRecording] = useState(false);
   const [videoSource, setVideoSource] = useState(null);
+  // const [statusS, requestPermission] = MediaLibrary.usePermissions();
   const cameraRef = useRef();
 
   //Check Camera & Microphone Perms
@@ -29,13 +30,19 @@ export default function App() {
     (async () => {
       const statusC = await Camera.requestCameraPermissionsAsync();
       const statusM = await Camera.requestMicrophonePermissionsAsync();
-      const statusS = MediaLibrary.usePermissions();
-      if (statusS.status == "granted" && statusC.status == "granted" && statusM.status == "granted")
+      const statusS = await MediaLibrary.requestPermissionsAsync();
+      console.log(statusS);
+      if (
+        statusM.status == "granted" &&
+        statusC.status == "granted" &&
+        statusS.status == "granted"
+      )
         setHasPermission(true);
       else setHasPermission(true);
     })();
   }, []);
 
+  //Function to take Pictures
   const takePicture = async () => {
     if (cameraRef.current) {
       const options = { quality: 0.5, base64: true, skipProcessing: true };
@@ -53,6 +60,7 @@ export default function App() {
       // await AsyncStorage.setItem('@storage_Key', jsonValue);
     }
   };
+  //Function to Record Videos
   const recordVideo = async () => {
     if (cameraRef.current) {
       try {
@@ -81,6 +89,8 @@ export default function App() {
       }
     }
   };
+
+  //Function to stop Video Recording
   const stopVideoRecording = () => {
     if (cameraRef.current) {
       setIsPreview(false);
@@ -126,17 +136,29 @@ export default function App() {
   );
   const renderCaptureControl = () => (
     <View style={styles.control}>
-      <TouchableOpacity disabled={!isCameraReady} onPress={switchCamera}>
+      {/* <TouchableOpacity disabled={!isCameraReady} onPress={switchCamera}>
         <Text style={styles.text}>{"Flip"}</Text>
+      </TouchableOpacity> */}
+      <TouchableOpacity
+        activeOpacity={0.7}
+        disabled={!isCameraReady}
+        // onLongPress={recordVideo}
+        // onPressOut={stopVideoRecording}
+        onPress={takePicture}
+        style={styles.capture}
+      >
+        <Text>Camera</Text>
       </TouchableOpacity>
       <TouchableOpacity
         activeOpacity={0.7}
         disabled={!isCameraReady}
-        onLongPress={recordVideo}
-        onPressOut={stopVideoRecording}
-        onPress={takePicture}
+        onLongPress={stopVideoRecording}
+        // onPressOut={stopVideoRecording}
+        onPress={recordVideo}
         style={styles.capture}
-      />
+      >
+        <Text>Video</Text>
+      </TouchableOpacity>
     </View>
   );
   if (hasPermission === null) {
@@ -194,6 +216,9 @@ const styles = StyleSheet.create({
   },
   capture: {
     backgroundColor: "#f5f6f5",
+    textAlign: "center",
+    alignItems: "center",
+    justifyContent: "center",
     borderRadius: 5,
     height: captureSize,
     width: captureSize,
