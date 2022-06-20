@@ -29,7 +29,7 @@ export default function App() {
     (async () => {
       const statusC = await Camera.requestCameraPermissionsAsync();
       const statusM = await Camera.requestMicrophonePermissionsAsync();
-      const statusS = await MediaLibrary.usePermissions();
+      const statusS = await MediaLibrary.requestPermissionsAsync();
       if (
         statusS.status == "granted" &&
         statusC.status == "granted" &&
