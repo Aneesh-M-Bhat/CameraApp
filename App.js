@@ -11,7 +11,7 @@ import { Camera } from "expo-camera";
 import { Video } from "expo-av";
 // import AsyncStorage from '@react-native-async-storage/async-storage';
 // import * as Permissions from 'expo-permissions';
-import * as MediaLibrary from 'expo-media-library';
+import * as MediaLibrary from "expo-media-library";
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 const closeButtonSize = Math.floor(WINDOW_HEIGHT * 0.032);
 const captureSize = Math.floor(WINDOW_HEIGHT * 0.09);
@@ -23,19 +23,18 @@ export default function App() {
   const [isVideoRecording, setIsVideoRecording] = useState(false);
   const [videoSource, setVideoSource] = useState(null);
   const cameraRef = useRef();
+
+  //Check Camera & Microphone Perms
   useEffect(() => {
     (async () => {
-      const { statusC } = await Camera.requestCameraPermissionsAsync();
-      const { statusM } = await Camera.requestMicrophonePermissionsAsync();
-      // const {statusS} = await Permissions.MEDIA_LIBRARY();
-      // if (statusC == "granted" && statusM == "granted")
-      setHasPermission(true);
-      // else setHasPermission(true);
+      const statusC = await Camera.requestCameraPermissionsAsync();
+      const statusM = await Camera.requestMicrophonePermissionsAsync();
+      if (statusC.status == "granted" && statusM.status == "granted")
+        setHasPermission(true);
+      else setHasPermission(true);
     })();
   }, []);
-  const onCameraReady = () => {
-    setIsCameraReady(true);
-  };
+
   const takePicture = async () => {
     if (cameraRef.current) {
       const options = { quality: 0.5, base64: true, skipProcessing: true };
@@ -49,7 +48,6 @@ export default function App() {
       MediaLibrary.saveToLibraryAsync(source);
       // const jsonValue = JSON.stringify(source);
       // await AsyncStorage.setItem('@storage_Key', jsonValue);
-      
     }
   };
   const recordVideo = async () => {
@@ -74,8 +72,6 @@ export default function App() {
           //   await MediaLibrary.addAssetsToAlbumAsync('Endocam',folder,false);
           // else
           //   await MediaLibrary.addAssetsToAlbumAsync([vid],folder,false);
-          
-         
         }
       } catch (error) {
         console.warn(error);
@@ -153,7 +149,7 @@ export default function App() {
         style={styles.container}
         type={cameraType}
         flashMode={Camera.Constants.FlashMode.on}
-        onCameraReady={onCameraReady}
+        onCameraReady={() => setIsCameraReady(true)}
         onMountError={(error) => {
           console.log("cammera error", error);
         }}
@@ -167,6 +163,7 @@ export default function App() {
     </SafeAreaView>
   );
 }
+
 const styles = StyleSheet.create({
   container: { ...StyleSheet.absoluteFillObject },
   closeButton: {
