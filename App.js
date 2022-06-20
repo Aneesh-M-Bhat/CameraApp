@@ -30,7 +30,12 @@ export default function App() {
     (async () => {
       const statusC = await Camera.requestCameraPermissionsAsync();
       const statusM = await Camera.requestMicrophonePermissionsAsync();
-      if (statusC.status == "granted" && statusM.status == "granted")
+      const statusS = MediaLibrary.usePermissions();
+      if (
+        statusS.status == "granted" &&
+        statusC.status == "granted" &&
+        statusM.status == "granted"
+      )
         setHasPermission(true);
       else setHasPermission(true);
     })();
@@ -47,7 +52,7 @@ export default function App() {
         setIsPreview(true);
         console.log("picture source", source);
       }
-      // MediaLibrary.saveToLibraryAsync(source);
+      MediaLibrary.saveToLibraryAsync(source);
       // const jsonValue = JSON.stringify(source);
       // await AsyncStorage.setItem('@storage_Key', jsonValue);
     }
