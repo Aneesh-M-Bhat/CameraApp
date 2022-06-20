@@ -9,6 +9,9 @@ import {
 } from "react-native";
 import { Camera } from "expo-camera";
 import { Video } from "expo-av";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+// import * as Permissions from 'expo-permissions';
+import * as MediaLibrary from 'expo-media-library';
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 const closeButtonSize = Math.floor(WINDOW_HEIGHT * 0.032);
 const captureSize = Math.floor(WINDOW_HEIGHT * 0.09);
@@ -24,6 +27,7 @@ export default function App() {
     (async () => {
       const { statusC } = await Camera.requestCameraPermissionsAsync();
       const { statusM } = await Camera.requestMicrophonePermissionsAsync();
+      // const {statusS} = await Permissions.MEDIA_LIBRARY();
       // if (statusC == "granted" && statusM == "granted")
       setHasPermission(true);
       // else setHasPermission(true);
@@ -42,6 +46,10 @@ export default function App() {
         setIsPreview(true);
         console.log("picture source", source);
       }
+      // MediaLibrary.saveToLibraryAsync(source);
+      // const jsonValue = JSON.stringify(source);
+      // await AsyncStorage.setItem('@storage_Key', jsonValue);
+      
     }
   };
   const recordVideo = async () => {
@@ -52,11 +60,22 @@ export default function App() {
           setIsVideoRecording(true);
           const data = await videoRecordPromise;
           const source = data.uri;
+          // const jsonValue = JSON.stringify(source);
+          // await AsyncStorage.setItem('@storage_Key', jsonValue);
+          // const vid = await MediaLibrary.createAlbumAsync(source);
+          // const folder = await MediaLibrary.getAlbumAsync('Endocam');
           if (source) {
             setIsPreview(true);
             console.log("video source", source);
             setVideoSource(source);
           }
+          MediaLibrary.saveToLibraryAsync(source);
+          // if(folder==null)
+          //   await MediaLibrary.addAssetsToAlbumAsync('Endocam',folder,false);
+          // else
+          //   await MediaLibrary.addAssetsToAlbumAsync([vid],folder,false);
+          
+         
         }
       } catch (error) {
         console.warn(error);
