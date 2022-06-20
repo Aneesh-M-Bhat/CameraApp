@@ -9,7 +9,6 @@ import {
 } from "react-native";
 import { Camera } from "expo-camera";
 import { Video } from "expo-av";
-// import * as Permissions from 'expo-permissions';
 import * as MediaLibrary from "expo-media-library";
 const WINDOW_HEIGHT = Dimensions.get("window").height;
 const closeButtonSize = Math.floor(WINDOW_HEIGHT * 0.032);
@@ -23,6 +22,7 @@ export default function App() {
   const [isCameraReady, setIsCameraReady] = useState(false);
   const [isVideoRecording, setIsVideoRecording] = useState(false);
   const [videoSource, setVideoSource] = useState(null);
+  // const [statusS, requestPermission] = MediaLibrary.usePermissions();
   const cameraRef = useRef();
 
   //Check Camera & Microphone Perms
@@ -30,11 +30,12 @@ export default function App() {
     (async () => {
       const statusC = await Camera.requestCameraPermissionsAsync();
       const statusM = await Camera.requestMicrophonePermissionsAsync();
-      const statusS = MediaLibrary.usePermissions();
+      const statusS = await MediaLibrary.requestPermissionsAsync();
+      console.log(statusS);
       if (
-        statusS.status == "granted" &&
+        statusM.status == "granted" &&
         statusC.status == "granted" &&
-        statusM.status == "granted"
+        statusS.status == "granted"
       )
         setHasPermission(true);
       else setHasPermission(true);
@@ -139,8 +140,8 @@ export default function App() {
       <TouchableOpacity
         activeOpacity={0.7}
         disabled={!isCameraReady}
-        onLongPress={recordVideo}
-        onPressOut={stopVideoRecording}
+        // onLongPress={recordVideo}
+        // onPressOut={stopVideoRecording}
         onPress={takePicture}
         style={styles.capture}
       >
