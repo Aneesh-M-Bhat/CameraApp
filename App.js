@@ -128,17 +128,29 @@ export default function App() {
   );
   const renderCaptureControl = () => (
     <View style={styles.control}>
-      <TouchableOpacity disabled={!isCameraReady} onPress={switchCamera}>
+      {/* <TouchableOpacity disabled={!isCameraReady} onPress={switchCamera}>
         <Text style={styles.text}>{"Flip"}</Text>
+      </TouchableOpacity> */}
+      <TouchableOpacity
+        activeOpacity={0.7}
+        disabled={!isCameraReady}
+        // onLongPress={recordVideo}
+        // onPressOut={stopVideoRecording}
+        onPress={takePicture}
+        style={styles.capture}
+      >
+        <Text>Camera</Text>
       </TouchableOpacity>
       <TouchableOpacity
         activeOpacity={0.7}
         disabled={!isCameraReady}
-        onLongPress={recordVideo}
-        onPressOut={stopVideoRecording}
+        onLongPress={stopVideoRecording}
+        // onPressOut={stopVideoRecording}
         onPress={takePicture}
         style={styles.capture}
-      />
+      >
+        <Text>Video</Text>
+      </TouchableOpacity>
     </View>
   );
   if (hasPermission === null) {
@@ -201,6 +213,9 @@ const styles = StyleSheet.create({
     width: captureSize,
     borderRadius: Math.floor(captureSize / 2),
     marginHorizontal: 31,
+    alignSelf: "center",
+    justifyContent: "center",
+    alignItems: "center",
   },
   recordIndicatorContainer: {
     flexDirection: "row",
